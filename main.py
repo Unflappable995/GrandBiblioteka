@@ -10,12 +10,29 @@ MAX_LENGTH = 4096
 bot = telebot.TeleBot(config.TOKEN)
 
 
+@bot.message_handler(content_types=['document'])
+def send_text(message):
+    try:
+        try:
+            save_dir = r"C:/GrandBiblioteka/new"
+        except:
+            save_dir = os.getcwd()
+            s = "[!] you aren't entered directory, saving to {}".format(save_dir)
+            bot.send_message(message.chat.id, str(s))
+        file_name = message.document.file_name
+        file_id = message.document.file_name
+        file_id_info = bot.get_file(message.document.file_id)
+        downloaded_file = bot.download_file(file_id_info.file_path)
+        src = file_name
+        with open(save_dir + "/" + src, 'wb') as new_file:
+            new_file.write(downloaded_file)
+        bot.send_message(message.chat.id, "[*] File added:\nFile name - {}\nFile directory - {}".format(str(file_name), str(save_dir)))
+    except Exception as ex:
+        bot.send_message(message.chat.id, "[!] error - {}".format(str(ex)))
 
 
 @bot.message_handler(commands=['start'])
 def send_start(message):
-
-
 	current_file = os.path.realpath('main.py')
 	folder_path1 = os.path.dirname(current_file)
 	folder_path = os.path.join(folder_path1, 'biblioteka')
