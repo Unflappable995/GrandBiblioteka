@@ -4,6 +4,10 @@ import os, sys
 from requests.exceptions import ConnectionError, ReadTimeout
 import random
 from telebot import types
+from filework import FileWork
+
+# ваш код
+
 
 
 MAX_LENGTH = 4096
@@ -14,7 +18,7 @@ bot = telebot.TeleBot(config.TOKEN)
 def send_text(message):
     try:
         try:
-            save_dir = r"C:/GrandBiblioteka/new"
+            save_dir = "C:\\GrandBiblioteka\\new\\"
         except:
             save_dir = os.getcwd()
             s = "[!] you aren't entered directory, saving to {}".format(save_dir)
@@ -27,6 +31,10 @@ def send_text(message):
         with open(save_dir + "/" + src, 'wb') as new_file:
             new_file.write(downloaded_file)
         bot.send_message(message.chat.id, "[*] File added:\nFile name - {}\nFile directory - {}".format(str(file_name), str(save_dir)))
+        file_path = os.path.join(str(save_dir), str(file_name))
+        bot.send_message(message.chat.id, "{}".format(file_path))
+        file = FileWork(file_path)
+        file.move_to_folder(save_dir)
     except Exception as ex:
         bot.send_message(message.chat.id, "[!] error - {}".format(str(ex)))
 
@@ -46,12 +54,15 @@ def send_start(message):
 	btn2 = types.KeyboardButton("/help")
 	btn3 = types.KeyboardButton("/random")
 	markup.add(btn1, btn2, btn3)
-	bot.send_message(message.chat.id, text=f"Данный бот является хранилищем книг. На данный момент он содержит {n_files} книг жанра фентези и фантастики", reply_markup=markup)
+	bot.send_message(message.chat.id, text=f"Данный бот является хранилищем книг. "
+										   f"На данный момент он содержит {n_files} книг жанра фентези и фантастики", reply_markup=markup)
 
 
 @bot.message_handler(commands=['help'])
 def send_help(message):
-	bot.send_message(message.chat.id, "Для того что бы скачать нужную книгу просто напишите имя автора или слово содержащееся в названиии, этого будет достаточно, команда рандом выводит название 10 случайных книг")
+	bot.send_message(message.chat.id, "Для того что бы скачать нужную книгу просто напишите имя автора или слово содержащееся в названиии, "
+									  "этого будет достаточно, команда рандом выводит название 10 случайных книг. Также можно добавлять "
+									  "книги в библиотеку как архивом с 1 книгой, так и просто файлом в формате fb2.")
 
 @bot.message_handler(commands=['random'])
 def send_random(message):
@@ -72,7 +83,6 @@ def send_random(message):
 @bot.message_handler(func=lambda message: message.chat.username in config.user_name)
 def download(message):
 
-
 	text1 = message.text
 	print(text1)
 	current_file = os.path.realpath('main.py')
@@ -86,9 +96,22 @@ def download(message):
 		file_list = '\n'.join(matching_files)  # Преобразуем список файлов в одну строку с переносами
 		# print (file_list)
 		# bot.send_message(message.chat.id, file_list)
+		file_found = False  # Устанавливаем флаг "Файл найден" в исходное состояние
+
+		# Проверяем каждый файл из списка
+		file_found = False
 		for file_path in matching_files:
-			with open(file_path, 'rb') as file:
-				bot.send_document(message.chat.id, file)
+			if os.path.exists(file_path):
+				with open(file_path, 'rb') as file:
+					bot.send_document(message.chat.id, file)
+					file_found = True  # Устанавливаем флаг "Файл найден"
+
+		# Если файл не найден, отправляем сообщение
+		if not file_found:
+			bot.send_message(message.chat.id, "Файл не найден.")
+			print("не найдено")
+
+
 	except:
 		bot.send_message(message.chat.id, "не нашел")
 
