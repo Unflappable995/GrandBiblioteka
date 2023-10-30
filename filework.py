@@ -61,6 +61,34 @@ class FileWork:
             print(f"Ошибка при обработке файла {self.file_path1}: {e}")
             print("Имя файла:", self.new_file_name)
 
+    def file_rename1(self, file_path):
+        try:
+            tree = ET.parse(self.file_path)
+        except ET.ParseError as e:
+            print(f"Ошибка при обработке файла {self.file_path1}: {e}")
+
+        root = tree.getroot()
+        try:
+            namespaces = {'fb': 'http://www.gribuser.ru/xml/fictionbook/2.0'}
+            title = root.find('.//{http://www.gribuser.ru/xml/fictionbook/2.0}book-title', namespaces).text
+            author_element = root.find('.//{http://www.gribuser.ru/xml/fictionbook/2.0}author')
+            try:
+                first_name = author_element.find('.//{http://www.gribuser.ru/xml/fictionbook/2.0}first-name').text
+                last_name = author_element.find('.//{http://www.gribuser.ru/xml/fictionbook/2.0}last-name').text
+            except:
+                print(f"пусто: {first_name} {last_name}")
+
+            self.new_file_name = title.replace(':', '-').replace('#', '_').replace('/', '_').replace('"', '_').replace(
+                '', '').replace('\n', '_').replace('*', '').replace('.', ' ').replace('?', '') + ' ' + str(
+                first_name) + ' ' + str(last_name) + '.fb2'
+            print(f'Фаил переименнован в {self.new_file_name}')
+            self.new_file_path = os.path.join(self.folder_path, self.new_file_name)
+            print(self.new_file_path)
+            os.rename(self.file_path, self.new_file_path)
+        except Exception as e:
+            print(f"Ошибка при обработке файла {self.file_path1}: {e}")
+            print("Имя файла:", self.new_file_name)
+
     def move_to_folder(self, folder_path):
         # self.folder_path = folder_path
         if self.is_archive():
@@ -84,7 +112,7 @@ class FileWork:
         else:
             print(f"File '{self.file_path}' is not an archive.")
             print('Начинаю переименовывать методом file_rename')
-            self.file_rename()
+            self.file_rename1(self.file_path)
             print('Перемещаю в основную библиотеку')
             path_file2 = os.path.join(self.folder_path, self.new_file_name)
             print(path_file2)
