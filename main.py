@@ -39,6 +39,34 @@ def send_text(message):
         bot.send_message(message.chat.id, "[!] error - {}".format(str(ex)))
 
 
+@bot.message_handler(commands=['delete'])
+def send_delete(message):
+	
+	markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+	btn1 = types.KeyboardButton("/start")
+	btn2 = types.KeyboardButton("/help")
+	btn3 = types.KeyboardButton("/random")
+	markup.add(btn1, btn2, btn3)
+	
+	current_file = os.path.realpath('main.py')
+	folder_path1 = os.path.dirname(current_file)
+	print(folder_path1)
+	folder_path = os.path.join(folder_path1, 'biblioteka')
+	print(folder_path)
+	input_string = message.text
+	last_word = input_string.split()
+	last_word = ' '.join(last_word[1:])
+	print(last_word)
+	file_path2 = os.path.join(folder_path, last_word)
+	print(file_path2)
+
+	if os.path.exists(file_path2):
+		os.remove(file_path2)
+		print(f"Файл {file_path2} успешно удален")
+	else:
+		print(f"Файл {file_path2} не существует")
+
+
 @bot.message_handler(commands=['start'])
 def send_start(message):
 	current_file = os.path.realpath('main.py')
@@ -63,6 +91,11 @@ def send_help(message):
 	bot.send_message(message.chat.id, "Для того что бы скачать нужную книгу просто напишите имя автора или слово содержащееся в названиии, "
 									  "этого будет достаточно, команда рандом выводит название 10 случайных книг. Также можно добавлять "
 									  "книги в библиотеку как архивом с 1 книгой, так и просто файлом в формате fb2.")
+	markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+	btn1 = types.KeyboardButton("/start")
+	btn2 = types.KeyboardButton("/help")
+	btn3 = types.KeyboardButton("/random")
+	markup.add(btn1, btn2, btn3)
 
 @bot.message_handler(commands=['random'])
 def send_random(message):
