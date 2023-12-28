@@ -5,6 +5,7 @@ from requests.exceptions import ConnectionError, ReadTimeout
 import random
 from telebot import types
 from filework import FileWork
+import g4f
 
 # ваш код
 
@@ -84,6 +85,29 @@ def send_start(message):
 	markup.add(btn1, btn2, btn3)
 	bot.send_message(message.chat.id, text=f"Данный бот является хранилищем книг. "
 										   f"На данный момент он содержит {n_files} книг жанра фентези и фантастики", reply_markup=markup)
+
+@bot.message_handler(commands=['ii'])
+def send_start(message):
+	input_string = message.text
+	last_word = input_string.split()
+	last_word = ' '.join(last_word[1:])
+	print(last_word)
+	# Using automatic a provider for the given model
+	## Streamed completion
+	response = g4f.ChatCompletion.create(
+		model="gpt-3.5-turbo",
+		messages=[{"role": "user", "content": last_word }],
+		stream=True,
+	)
+	combined_message = ""
+	for message1 in response:
+		combined_message += message1
+	bot.send_message(message.chat.id, combined_message)
+
+
+
+
+
 
 
 @bot.message_handler(commands=['help'])
