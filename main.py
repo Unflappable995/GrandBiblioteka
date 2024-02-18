@@ -9,8 +9,6 @@ import g4f
 
 # ваш код
 
-
-
 MAX_LENGTH = 4096
 bot = telebot.TeleBot(config.TOKEN)
 
@@ -19,7 +17,7 @@ bot = telebot.TeleBot(config.TOKEN)
 def send_text(message):
     try:
         try:
-            save_dir = "C:\\GrandBiblioteka\\new\\"
+            save_dir = os.getcwd() + '\\new' + '\\'
         except:
             save_dir = os.getcwd()
             s = "[!] you aren't entered directory, saving to {}".format(save_dir)

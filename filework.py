@@ -10,10 +10,10 @@ class FileWork:
 
     def __init__(self, file_path):
         self.file_path = file_path
-        self.extract_path = 'C:\\GrandBiblioteka\\new\\'
-        self.folder_path = 'C:\\GrandBiblioteka\\new\\'
+        self.extract_path = os.getcwd() + '\\new' + '\\'
+        self.folder_path = os.getcwd() + '\\new' + '\\'
         self.file_path1 = None
-        self.folder_path_biblioteka = 'C:\\GrandBiblioteka\\biblioteka\\'
+        self.folder_path_biblioteka = os.getcwd() + '\\biblioteka' + '\\'
         self.new_file_name = None
         self.new_file_path = None
 
