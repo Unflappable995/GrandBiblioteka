@@ -144,7 +144,10 @@ def download(message):
 	folder_path1 = os.path.dirname(current_file)
 	folder_path = os.path.join(folder_path1, 'biblioteka')
 	# print(folder_path)
+	if not os.path.exists(folder_path):
+		os.makedirs(folder_path, exist_ok=True)
 	files = os.listdir(folder_path)
+
 	# print(files)
 	try:
 		matching_files = [os.path.join(folder_path, file) for file in files if text1.lower() in file.lower()]
