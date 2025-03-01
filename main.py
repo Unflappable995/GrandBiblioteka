@@ -9,6 +9,9 @@ import g4f
 
 # ваш код
 
+
+
+
 MAX_LENGTH = 4096
 bot = telebot.TeleBot(config.TOKEN)
 
@@ -29,7 +32,8 @@ for folder in folders_nw:
 def send_text(message):
     try:
         try:
-            save_dir = os.getcwd() + '\\new' + '\\'
+            #save_dir = os.getcwd() + '\\new' + '\\'
+			save_dir = os.path.join(os.getcwd(), 'new')
         except:
             save_dir = os.getcwd()
             s = "[!] you aren't entered directory, saving to {}".format(save_dir)
@@ -52,7 +56,6 @@ def send_text(message):
 
 @bot.message_handler(commands=['delete'])
 def send_delete(message):
-	
 	markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 	btn1 = types.KeyboardButton("/start")
 	btn2 = types.KeyboardButton("/help")
