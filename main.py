@@ -20,38 +20,37 @@ bot = telebot.TeleBot(config.TOKEN)
 
 folders_nw = ["new", "biblioteka"]
 for folder in folders_nw:
-    folder_path = folder  # можно указать и полный путь, например, f"./{folder}"
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path, exist_ok=True)
-        print(f"Папка {folder} создана")
-    else:
-        print(f"Папка {folder} уже существует")
+	folder_path = folder  # можно указать и полный путь, например, f"./{folder}"
+	if not os.path.exists(folder_path):
+		os.makedirs(folder_path, exist_ok=True)
+		print(f"Папка {folder} создана")
+	else:
+		print(f"Папка {folder} уже существует")
 
 
 @bot.message_handler(content_types=['document'])
 def send_text(message):
-    try:
-        try:
-            #save_dir = os.getcwd() + '\\new' + '\\'
+	try:
+		try:
 			save_dir = os.path.join(os.getcwd(), 'new')
-        except:
-            save_dir = os.getcwd()
-            s = "[!] you aren't entered directory, saving to {}".format(save_dir)
-            bot.send_message(message.chat.id, str(s))
-        file_name = message.document.file_name
-        file_id = message.document.file_name
-        file_id_info = bot.get_file(message.document.file_id)
-        downloaded_file = bot.download_file(file_id_info.file_path)
-        src = file_name
-        with open(save_dir + "/" + src, 'wb') as new_file:
-            new_file.write(downloaded_file)
-        bot.send_message(message.chat.id, "[*] File added:\nFile name - {}\nFile directory - {}".format(str(file_name), str(save_dir)))
-        file_path = os.path.join(str(save_dir), str(file_name))
-        bot.send_message(message.chat.id, "{}".format(file_path))
-        file = FileWork(file_path)
-        file.move_to_folder(save_dir)
-    except Exception as ex:
-        bot.send_message(message.chat.id, "[!] error - {}".format(str(ex)))
+		except:
+			save_dir = os.getcwd()
+			s = "[!] you aren't entered directory, saving to {}".format(save_dir)
+			bot.send_message(message.chat.id, str(s))
+		file_name = message.document.file_name
+		file_id = message.document.file_name
+		file_id_info = bot.get_file(message.document.file_id)
+		downloaded_file = bot.download_file(file_id_info.file_path)
+		src = file_name
+		with open(save_dir + "/" + src, 'wb') as new_file:
+			new_file.write(downloaded_file)
+		bot.send_message(message.chat.id, "[*] File added:\nFile name - {}\nFile directory - {}".format(str(file_name), str(save_dir)))
+		file_path = os.path.join(str(save_dir), str(file_name))
+		bot.send_message(message.chat.id, "{}".format(file_path))
+		file = FileWork(file_path)
+		file.move_to_folder(save_dir)
+	except Exception as ex:
+		bot.send_message(message.chat.id, "[!] error - {}".format(str(ex)))
 
 
 @bot.message_handler(commands=['delete'])
